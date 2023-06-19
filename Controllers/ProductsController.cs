@@ -30,11 +30,20 @@ namespace ProductCatalog.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
+            ViewBag.CategoryID = _context.Categories.ToList();
+
             if (_context.Products != null)
             {
                 try
                 {
+                    if(User.IsInRole("Admin"))
+                    {
                     return View(Product.GetAll().ToList());
+                    }
+                    else
+                    {
+                        return View(Product.GetAllAvail().ToList());
+                    }
                 }
                 catch(Exception ex) 
                 {
@@ -42,6 +51,20 @@ namespace ProductCatalog.Controllers
                 }
             }
 
+            return View(ViewBag.CategoryID);
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(int CategoryId)
+        {
+            ViewBag.CategoryID = _context.Categories.ToList();
+
+            if ((_context.Products.Any(c => c.CategoryID == CategoryId)))
+            {
+                List<Product> product = _context.Products.Where(c => c.CategoryID == CategoryId).ToList();
+                return View(product);
+            }
             return View();
 
         }
@@ -90,11 +113,17 @@ namespace ProductCatalog.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    Product.Insert(product);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
-            return View(product);
+            return BadRequest("Some Data are missed");
         }
 
         [Authorize(Roles = "Admin")]
@@ -102,6 +131,7 @@ namespace ProductCatalog.Controllers
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.CategoryID = new SelectList(_context.Categories, "CategoryId", "CategoryName");
             if (id == null || _context.Products == null)
             {
                 return NotFound();
@@ -120,19 +150,17 @@ namespace ProductCatalog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductID,ProductName,CreationDate,CreatedBy,StartDate,Duration,CategoryID")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductID,ProductName,Price,CreationDate,CreatedBy,StartDate,Duration,CategoryID")] Product product)
         {
             if (id != product.ProductID)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && product.StartDate>=DateTime.Now)
             {
                 try
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    Product.Update(id, product);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -147,7 +175,7 @@ namespace ProductCatalog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return BadRequest();
         }
         [Authorize(Roles = "Admin")]
         // GET: Products/Delete/5
@@ -180,10 +208,16 @@ namespace ProductCatalog.Controllers
             var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
-                _context.Products.Remove(product);
+                try
+                {
+                    Product.Delete(id);
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
             
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

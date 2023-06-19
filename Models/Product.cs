@@ -22,8 +22,11 @@ namespace ProductCatalog.Models
         public DateTime StartDate { get; set; }
 
         [Required]
+        [Range(minimum:0,maximum:int.MaxValue)]
         public int Duration { get; set; }
 
+        [Required]
+        [Range(minimum: 0, maximum: int.MaxValue)]
         public int Price { get; set; }
 
         // category ForeignKey

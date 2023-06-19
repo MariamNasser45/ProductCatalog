@@ -23,9 +23,18 @@ namespace ProductCatalog.Repo.RepoServices
             Context.SaveChanges();
         }
 
+        public List<Product> GetAllAvail()
+        {
+            return Context.Products.Where(c => c.StartDate <= DateTime.Now).ToList();
+
+            //return Context.Products.ToList();
+        }
+
         public List<Product> GetAll()
         {
-           return Context.Products.ToList();
+            //return Context.Products.Where(c => c.StartDate < DateTime.Now).ToList();
+
+            return Context.Products.ToList();
         }
 
         public Product GetById(int id)
@@ -47,6 +56,7 @@ namespace ProductCatalog.Repo.RepoServices
             var Editproduct = Context.Products.FirstOrDefault(p => p.ProductID == id);
 
             Editproduct.ProductName = product.ProductName;
+            Editproduct.Price = product.Price;
             Editproduct.Duration = product.Duration;
             Editproduct.StartDate = product.StartDate;
             Editproduct.CategoryID = product.CategoryID;
