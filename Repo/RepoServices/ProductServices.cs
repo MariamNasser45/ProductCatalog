@@ -25,14 +25,12 @@ namespace ProductCatalog.Repo.RepoServices
 
         public List<Product> GetAllAvail()
         {
-            return Context.Products.Where(c => c.StartDate <= DateTime.Now).ToList();
+            return Context.Products.Where(c =>(DateTime.Now.Day- c.StartDate.Day) < c.Duration).ToList();
 
-            //return Context.Products.ToList();
         }
 
         public List<Product> GetAll()
         {
-            //return Context.Products.Where(c => c.StartDate < DateTime.Now).ToList();
 
             return Context.Products.ToList();
         }

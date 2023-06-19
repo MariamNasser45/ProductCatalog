@@ -62,8 +62,16 @@ namespace ProductCatalog.Controllers
 
             if ((_context.Products.Any(c => c.CategoryID == CategoryId)))
             {
-                List<Product> product = _context.Products.Where(c => c.CategoryID == CategoryId).ToList();
-                return View(product);
+                if(User.IsInRole("Admin"))
+                {
+                    List<Product> product = _context.Products.Where(c => c.CategoryID == CategoryId).ToList();
+                    return View(product);
+                }
+                else
+                {
+                    List<Product> product = _context.Products.Where(c => c.CategoryID == CategoryId && (DateTime.Now.Day - c.StartDate.Day) < c.Duration).ToList();
+                    return View(product);
+                }
             }
             return View();
 

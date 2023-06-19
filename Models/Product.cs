@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProductCatalog.Models
@@ -11,7 +12,7 @@ namespace ProductCatalog.Models
         public string ProductName { get; set; }
 
         [Required]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateTime CreationDate { get; set; }= DateTime.Now;
 
         [StringLength(450)]
@@ -32,5 +33,6 @@ namespace ProductCatalog.Models
         // category ForeignKey
         [ForeignKey("Categories")]
         public int? CategoryID { get; set; }
+        
     }
 }
