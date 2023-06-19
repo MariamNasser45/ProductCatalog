@@ -1,0 +1,15 @@
+﻿using ProductCatalog.Models;
+using System.Numerics;
+
+namespace ProductCatalog.Repo
+{
+    public interface IProductRepo
+    {
+        public List<Product> GetAll();
+        public Product GetById(int id);
+        public void Insert(Product product);
+        public void Update(int id, Product product);
+        public void Delete(int id);
+
+    }
+}
