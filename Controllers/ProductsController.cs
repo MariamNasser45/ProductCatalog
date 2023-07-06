@@ -102,7 +102,7 @@ namespace ProductCatalog.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewBag.CategoryID = new SelectList(CategoryRepo.GetAll(), "CategoryID" , "CategoryName");
+            ViewBag.CategoryID = new SelectList(CategoryRepo.GetAll(), "CategoryID" , "categoryName");
 
             return View();
         }
@@ -137,7 +137,7 @@ namespace ProductCatalog.Controllers
         // GET: Products/Edit/5
         public IActionResult Edit(int id)
         {
-            ViewBag.CategoryID =new SelectList(CategoryRepo.GetAll(),"CategoryID","CategoryName");
+            ViewBag.CategoryID =new SelectList(CategoryRepo.GetAll(),"CategoryID","categoryName");
  
             if (Product.GetById(id)!=null)
             {
