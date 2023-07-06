@@ -24,6 +24,7 @@ namespace ProductCatalog.Controllers
         public ProductsController(IProductRepo product,ApplicationDbContext context)
         {
             Product = product;
+            Category = category;
             _context = context;
         }
 

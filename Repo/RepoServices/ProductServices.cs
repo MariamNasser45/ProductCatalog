@@ -25,8 +25,7 @@ namespace ProductCatalog.Repo.RepoServices
 
         public List<Product> GetAllAvail()
         {
-            return Context.Products.Where(c =>(DateTime.Now.Day- c.StartDate.Day) < c.Duration).ToList();
-
+            return Context.Products.Where(c =>(DateTime.Now.Ticks - c.StartDate.Ticks) < c.Duration).ToList();
         }
 
         public List<Product> GetAll()
