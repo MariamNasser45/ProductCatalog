@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductCatalog.Data;
 
@@ -11,9 +12,10 @@ using ProductCatalog.Data;
 namespace ProductCatalog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230706104247_ChangesInModels")]
+    partial class ChangesInModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,7 +224,7 @@ namespace ProductCatalog.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryID"), 1L, 1);
 
-                    b.Property<string>("categoryName")
+                    b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -234,12 +236,12 @@ namespace ProductCatalog.Data.Migrations
                         new
                         {
                             CategoryID = 1,
-                            categoryName = "PC Accessories"
+                            CategoryName = "PC Accessories"
                         },
                         new
                         {
                             CategoryID = 2,
-                            categoryName = "Mobile Accessories"
+                            CategoryName = "Mobile Accessories"
                         });
                 });
 
@@ -254,25 +256,25 @@ namespace ProductCatalog.Data.Migrations
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
-                    b.Property<string>("createdBy")
+                    b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("creationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("duration")
+                    b.Property<int>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<int>("price")
+                    b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<string>("productName")
+                    b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("startDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ProductID");

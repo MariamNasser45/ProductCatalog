@@ -9,30 +9,36 @@ namespace ProductCatalog.Models
         public int ProductID { get; set; }
 
         [Required]
-        public string ProductName { get; set; }
+        [Display(Name = "Product Name")]
+        public string productName { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
-        public DateTime CreationDate { get; set; }= DateTime.Now;
+        [Display(Name = "Creation Date")]
+        public DateTime creationDate { get; set; }
 
         [StringLength(450)]
-        public string CreatedBy { get; set; }
+        [Display(Name = "Created By")]
+        public string createdBy { get; set; }
       
         [Required]
         [DataType(DataType.Date)]
-        public DateTime StartDate { get; set; }
+        [Display(Name = "Start Date")]
+        public DateTime startDate { get; set; }
 
         [Required]
-        [Range(minimum:0,maximum:int.MaxValue)]
-        public int Duration { get; set; }
+        [Range(minimum:1,maximum:int.MaxValue)]
+        [Display(Name ="Duration in Days")]
+        public int duration { get; set; }
 
         [Required]
-        [Range(minimum: 0, maximum: int.MaxValue)]
-        public int Price { get; set; }
+        [Range(minimum: 1, maximum: int.MaxValue)]
+        public int price { get; set; }
 
         // category ForeignKey
-        [ForeignKey("Categories")]
-        public int? CategoryID { get; set; }
+        //[ForeignKey("Categories")]
+        public Category? category { get; set; } // By using Navigational property don't need to use DataAnnotation[ForeignKey("Categories")]
+        public int CategoryID { get; set; }
         
     }
 }

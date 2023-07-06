@@ -18,208 +18,177 @@ namespace ProductCatalog.Controllers
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private IProductRepo Product { get; }
+        private ICategoryRepo CategoryRepo { get; }
 
-        public IProductRepo Product { get; }
-
-        public ProductsController(IProductRepo product,ApplicationDbContext context)
+        public ProductsController(IProductRepo product,ICategoryRepo categoryRepo,ApplicationDbContext context)
         {
             Product = product;
-            Category = category;
+            CategoryRepo = categoryRepo;
             _context = context;
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            ViewBag.CategoryID = _context.Categories.ToList();
+            ViewBag.CategoryID = CategoryRepo.GetAll();
 
-            if (_context.Products != null)
+            if (Product.GetAll().Count != 0)
             {
                 try
                 {
                     if(User.IsInRole("Admin"))
                     {
-                    return View(Product.GetAll().ToList());
+                         return View(Product.GetAll());
                     }
                     else
                     {
-                        return View(Product.GetAllAvail().ToList());
+                        return View(Product.GetAllAvail());
                     }
                 }
                 catch(Exception ex) 
                 {
-                    return BadRequest(ex.Message);
+                    return BadRequest("Some Error Occured Please try Again Latter");
                 }
             }
-
-            return View(ViewBag.CategoryID);
-
+            else
+            {
+            return View();
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(int CategoryId)
+        public IActionResult Index(int CategoryId)
         {
-            ViewBag.CategoryID = _context.Categories.ToList();
+            ViewBag.CategoryID =CategoryRepo.GetAll();
 
-            if ((_context.Products.Any(c => c.CategoryID == CategoryId)))
+            if (CategoryRepo.CheckCategoryExistance(CategoryId))
             {
-                if(User.IsInRole("Admin"))
+                if(Product.CheckProductExistance(CategoryId))
                 {
-                    List<Product> product = _context.Products.Where(c => c.CategoryID == CategoryId).ToList();
-                    return View(product);
+                    if(User.IsInRole("Admin"))
+                    {
+                        return View(Product.GetAll().Where(p=>p.CategoryID==CategoryId));
+                    }
+                    else
+                    {
+                        return View(Product.GetAllAvail().Where(c => c.CategoryID==CategoryId));
+                    }
                 }
-                else
-                {
-                    List<Product> product = _context.Products.Where(c => c.CategoryID == CategoryId && (DateTime.Now.Day - c.StartDate.Day) < c.Duration).ToList();
-                    return View(product);
-                }
+                return BadRequest("Oops! There are no Products in selected category .... \nPlease try again leter or select other ");
             }
-            return View();
-
+            return View(Product.GetAllAvail());
         }
 
         // GET: Products/Details/5
-        public async Task<IActionResult> Details(int id)
+        public IActionResult Details(int id)
         {
-            if(ModelState.IsValid)
-            {
-                var prod=_context.Products.FirstOrDefault(p=>p.ProductID== id);
-                if(prod!=null)
+                if(Product.GetById(id)!=null)
                 {
-
-                try
-                {
-                   return View(Product.GetById(id));
-                }
-                catch(Exception ex)
-                {
-                    return NotFound(ex.Message);
-                }
+                    try
+                    {
+                       return View(Product.GetById(id));
+                    }
+                    catch(Exception ex)
+                    {
+                        return BadRequest("These Product is not Available");
+                    }
                }
-            }
 
-            return NotFound();
+            return BadRequest("These Product is not Available");
         }
+
         [Authorize(Roles ="Admin")]
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewBag.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            ViewBag.CategoryID = new SelectList(_context.Categories, "CategoryId", "CategoryName");
+            ViewBag.CategoryID = new SelectList(CategoryRepo.GetAll(), "CategoryID" , "CategoryName");
 
             return View();
         }
 
         // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductID,ProductName,Price,CreationDate,CreatedBy,StartDate,Duration,CategoryID")] Product product)
+        public IActionResult Create(Product product)
         {
+            //var UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-
-            if (ModelState.IsValid)
+             product.createdBy = HttpContext.User.Identity.Name; // get current user name
+             product.creationDate = DateTime.Now;
+            if(product != null)
             {
                 try
                 {
                     Product.Insert(product);
-                    return RedirectToAction(nameof(Index));
+                    Details(product.ProductID);
+                    return View("Details");
                 }
-                catch(Exception ex)
+                catch
                 {
-                    return BadRequest(ex.Message);
+                    return BadRequest("Some Error Occure While Creating");
                 }
             }
+            
             return BadRequest("Some Data are missed");
         }
 
         [Authorize(Roles = "Admin")]
-
         // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            ViewBag.CategoryID = new SelectList(_context.Categories, "CategoryId", "CategoryName");
-            if (id == null || _context.Products == null)
+            ViewBag.CategoryID =new SelectList(CategoryRepo.GetAll(),"CategoryID","CategoryName");
+ 
+            if (Product.GetById(id)!=null)
             {
-                return NotFound();
+                return View(Product.GetById(id));
             }
+            return NotFound("Invalid Product To Edit");
 
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return View(product);
         }
 
         // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductID,ProductName,Price,CreationDate,CreatedBy,StartDate,Duration,CategoryID")] Product product)
+        public IActionResult Edit(Product product)
         {
-            if (id != product.ProductID)
-            {
-                return NotFound();
-            }
-            if (ModelState.IsValid && product.StartDate>=DateTime.Now)
-            {
                 try
                 {
-                    Product.Update(id, product);
+                    Product.Update(product.ProductID , product);
+                    Details(product.ProductID);
+                    return View("Details");
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!ProductExists(product.ProductID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                        return NotFound($"This product Invalid to Edit, Error Details {ex.Message}");
                 }
-                return RedirectToAction(nameof(Index));
-            }
+
             return BadRequest();
         }
         [Authorize(Roles = "Admin")]
         // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null || _context.Products == null)
+            if (Product.GetById(id)!=null)
             {
-                return NotFound();
+              return View(Product.GetById(id));
             }
+            return NotFound();
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.ProductID == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
         }
 
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            if (_context.Products == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Products'  is null.");
-            }
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
+            if (Product.GetById(id) != null)
             {
                 try
                 {
                     Product.Delete(id);
+                    Index(0);
+                    return View("Index");
                 }
                 catch(Exception ex)
                 {
@@ -227,12 +196,8 @@ namespace ProductCatalog.Controllers
                 }
             }
             
-            return RedirectToAction(nameof(Index));
+            return View("Index");
         }
 
-        private bool ProductExists(int id)
-        {
-          return (_context.Products?.Any(e => e.ProductID == id)).GetValueOrDefault();
-        }
     }
 }

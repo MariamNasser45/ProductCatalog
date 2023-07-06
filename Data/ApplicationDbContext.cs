@@ -31,18 +31,13 @@ namespace ProductCatalog.Data
            builder.Entity<IdentityUser>().ToTable("Users").Ignore(c => c.PhoneNumberConfirmed);
 
             //seed data to the table in DB
-             builder.Entity<Category>().HasData(new Category
+            builder.Entity<Category>().HasData(new Category[] 
             {
-                 CategoryId = 1,
-                 CategoryName = "PC Accessories",
+                new Category {    CategoryID = 1 , categoryName = "PC Accessories"},
+               
+                new Category {    CategoryID = 2 , categoryName = "Mobile Accessories"}
             });
-
-            builder.Entity<Category>().HasData(new Category
-            {
-                CategoryId = 2,
-                CategoryName = "Mobile Accessories",
-            });
-            ;
+   
         }
         public DbSet<Product> Products { get; set; }
 

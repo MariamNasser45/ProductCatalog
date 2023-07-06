@@ -1,9 +1,13 @@
-﻿namespace ProductCatalog.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ProductCatalog.Models
 {
     public class Category
     {
-        public int CategoryId { get; set;}
-        public string CategoryName { get; set;}
+        public int CategoryID { get; set;}
+
+        [Display(Name = "Category Name")]
+        public string categoryName { get; set;}
         public ICollection<Product> products { get; set;}
     }
 }

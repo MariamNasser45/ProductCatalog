@@ -35,6 +35,8 @@ namespace ProductCatalog
             builder.Services.AddRazorPages();
 
             builder.Services.AddScoped<IProductRepo, ProductServices>();
+            builder.Services.AddScoped<ICategoryRepo, CategoryServices>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

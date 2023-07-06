@@ -1,4 +1,7 @@
-﻿using ProductCatalog.Data;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using ProductCatalog.Data;
 using ProductCatalog.Models;
 using System.Security.Claims;
 
@@ -7,30 +10,34 @@ namespace ProductCatalog.Repo.RepoServices
     public class ProductServices : IProductRepo
     {
         public ApplicationDbContext Context { get; }
-
         public ProductServices(ApplicationDbContext context)
         {
             Context = context;
         }
-
-
+        
         public void Delete(int id)
         {
-            var deleteProduct = Context.Products.FirstOrDefault(p => p.ProductID == id);
+            //using Finde or SingleOrDefault instead FirstOrDefault because id is unique identifier
+            var deleteProduct = Context.Products.SingleOrDefault(p => p.ProductID == id);
 
-            Context.Remove(deleteProduct);
-            
-            Context.SaveChanges();
+            if (deleteProduct != null)
+            {
+                Context.Remove(deleteProduct);
+
+                Context.SaveChanges();
+            }
         }
 
         public List<Product> GetAllAvail()
         {
-            return Context.Products.Where(c =>(DateTime.Now.Ticks - c.StartDate.Ticks) < c.Duration).ToList();
+            //return Context.Products.Where(c => (DateTime.Now.Subtract(c.StartDate)) < TimeSpan.Parse(c.StartDate.AddDays(c.Duration).ToString())).ToList();
+
+            return Context.Products.Where(c => (DateTime.Now.Day - c.startDate.Day) < c.duration).ToList();
         }
+
 
         public List<Product> GetAll()
         {
-
             return Context.Products.ToList();
         }
 
@@ -38,30 +45,33 @@ namespace ProductCatalog.Repo.RepoServices
         {
 
             return Context.Products.FirstOrDefault(p => p.ProductID == id);
-
         }
 
         public void Insert(Product product)
         {
-            
             Context.Add(product);
             Context.SaveChanges();
+        }
+        public bool CheckProductExistance(int CategoryId)
+        {
+            return Context.Products.Any(p => p.CategoryID == CategoryId);
         }
 
         public void Update(int id, Product product)
         {
             var Editproduct = Context.Products.FirstOrDefault(p => p.ProductID == id);
 
-            Editproduct.ProductName = product.ProductName;
-            Editproduct.Price = product.Price;
-            Editproduct.Duration = product.Duration;
-            Editproduct.StartDate = product.StartDate;
+            Editproduct.productName = product.productName;
+            Editproduct.price = product.price;
+            Editproduct.duration = product.duration;
+            Editproduct.startDate = product.startDate;
             Editproduct.CategoryID = product.CategoryID;
-            Editproduct.CreationDate = product.CreationDate;
 
             Context.Update(Editproduct);
             Context.SaveChanges();
 
         }
+
+
     }
 }

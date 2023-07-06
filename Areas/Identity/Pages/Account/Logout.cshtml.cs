@@ -27,6 +27,8 @@ namespace ProductCatalog.Areas.Identity.Pages.Account
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+            returnUrl = Url.Content("~/Products/Index");
+
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);

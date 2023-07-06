@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductCatalog.Data;
 
@@ -11,9 +12,10 @@ using ProductCatalog.Data;
 namespace ProductCatalog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230704125324_ChangeCreationDate")]
+    partial class ChangeCreationDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,30 +218,30 @@ namespace ProductCatalog.Data.Migrations
 
             modelBuilder.Entity("ProductCatalog.Models.Category", b =>
                 {
-                    b.Property<int>("CategoryID")
+                    b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"), 1L, 1);
 
-                    b.Property<string>("categoryName")
+                    b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CategoryID");
+                    b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
 
                     b.HasData(
                         new
                         {
-                            CategoryID = 1,
-                            categoryName = "PC Accessories"
+                            CategoryId = 1,
+                            CategoryName = "PC Accessories"
                         },
                         new
                         {
-                            CategoryID = 2,
-                            categoryName = "Mobile Accessories"
+                            CategoryId = 2,
+                            CategoryName = "Mobile Accessories"
                         });
                 });
 
@@ -251,28 +253,28 @@ namespace ProductCatalog.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductID"), 1L, 1);
 
-                    b.Property<int>("CategoryID")
+                    b.Property<int?>("CategoryID")
                         .HasColumnType("int");
 
-                    b.Property<string>("createdBy")
+                    b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("creationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("duration")
+                    b.Property<int>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<int>("price")
+                    b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<string>("productName")
+                    b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("startDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ProductID");
@@ -335,13 +337,9 @@ namespace ProductCatalog.Data.Migrations
 
             modelBuilder.Entity("ProductCatalog.Models.Product", b =>
                 {
-                    b.HasOne("ProductCatalog.Models.Category", "category")
+                    b.HasOne("ProductCatalog.Models.Category", null)
                         .WithMany("products")
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("category");
+                        .HasForeignKey("CategoryID");
                 });
 
             modelBuilder.Entity("ProductCatalog.Models.Category", b =>
