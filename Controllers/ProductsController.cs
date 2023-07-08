@@ -35,6 +35,7 @@ namespace ProductCatalog.Controllers
 
             if (Product.GetAll().Count != 0)
             {
+                
                 try
                 {
                     if(User.IsInRole("Admin"))
@@ -64,20 +65,32 @@ namespace ProductCatalog.Controllers
 
             if (CategoryRepo.CheckCategoryExistance(CategoryId))
             {
-                if(Product.CheckProductExistance(CategoryId))
+                if (Product.CheckProductExistance(CategoryId))
                 {
-                    if(User.IsInRole("Admin"))
+                    if (User.IsInRole("Admin"))
                     {
-                        return View(Product.GetAll().Where(p=>p.CategoryID==CategoryId));
+                        return View(Product.GetAll().Where(p => p.CategoryID == CategoryId));
                     }
                     else
                     {
-                        return View(Product.GetAllAvail().Where(c => c.CategoryID==CategoryId));
+                        return View(Product.GetAllAvail().Where(c => c.CategoryID == CategoryId));
                     }
                 }
                 return BadRequest("Oops! There are no Products in selected category .... \nPlease try again leter or select other ");
             }
-            return View(Product.GetAllAvail());
+            else
+            {
+
+                if (User.IsInRole("Admin"))
+                {
+                    return View(Product.GetAll());
+                }
+                else
+                {
+                    return View(Product.GetAllAvail());
+                }
+            }
+            return View();
         }
 
         // GET: Products/Details/5

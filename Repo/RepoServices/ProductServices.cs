@@ -17,7 +17,7 @@ namespace ProductCatalog.Repo.RepoServices
         
         public void Delete(int id)
         {
-            //using Finde or SingleOrDefault instead FirstOrDefault because id is unique identifier
+            //using Finde or SingleOrDefault instead SingleOrDefault because id is unique identifier
             var deleteProduct = Context.Products.SingleOrDefault(p => p.ProductID == id);
 
             if (deleteProduct != null)
@@ -44,7 +44,7 @@ namespace ProductCatalog.Repo.RepoServices
         public Product GetById(int id)
         {
 
-            return Context.Products.FirstOrDefault(p => p.ProductID == id);
+            return Context.Products.SingleOrDefault(p => p.ProductID == id);
         }
 
         public void Insert(Product product)
@@ -59,7 +59,7 @@ namespace ProductCatalog.Repo.RepoServices
 
         public void Update(int id, Product product)
         {
-            var Editproduct = Context.Products.FirstOrDefault(p => p.ProductID == id);
+            var Editproduct = Context.Products.SingleOrDefault(p => p.ProductID == id);
 
             Editproduct.productName = product.productName;
             Editproduct.price = product.price;
@@ -67,7 +67,7 @@ namespace ProductCatalog.Repo.RepoServices
             Editproduct.startDate = product.startDate;
             Editproduct.CategoryID = product.CategoryID;
 
-            Context.Update(Editproduct);
+            //Context.Update(product);
             Context.SaveChanges();
 
         }
