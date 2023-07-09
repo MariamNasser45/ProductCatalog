@@ -9,41 +9,41 @@
 <div>
     <hr />
     <dl class="row" style="background-color:black; text-align:justify; font-weight:bold; font-size:large;color:white">
-        <dt class="col-sm-4">
+        <dt class="col-sm-3">
             <label asp-for="productName"></label>
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => model.productName)
+            <p>@Model.productName</p>
         </dd>
-        <dt class="col-sm-4">
+        <dt class="col-sm-3">
             <label asp-for="price"></label>
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.price)
+            <p>@Model.price</p>
         </dd>
-        <dt class = "col-sm-4">
+        <dt class = "col-sm-3">
             <label asp-for="creationDate"></label>
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => model.creationDate)
+            <p>@Model.creationDate</p>
         </dd>
-        <dt class = "col-sm-4">
+        <dt class = "col-sm-3">
             <label asp-for="createdBy"></label>
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => model.createdBy)
+            <p>@Model.createdBy</p>
         </dd>
-        <dt class = "col-sm-4">
+        <dt class = "col-sm-3">
             <label asp-for="startDate"></label>
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => model.startDate)
+            <p>@Model.startDate</p>
         </dd>
-        <dt class = "col-sm-4">
+        <dt class = "col-sm-3">
             <label asp-for="duration"></label>
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => model.duration)
+            <p>@Model.duration</p>
         </dd>
     </dl>
 </div>

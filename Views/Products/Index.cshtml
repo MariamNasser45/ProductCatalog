@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<ProductCatalog.Models.Product>
-
+@using ProductCatalog.Models;
 @{
     ViewData["Title"] = "All Products";
 }
@@ -32,6 +32,7 @@
     <thead>
         <tr>
             <th>
+                @*<label asp-for="@Model.productName">model => model.price</label>*@
                 @Html.DisplayNameFor(model => model.productName)
             </th>
             <th>
@@ -61,22 +62,22 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.productName)
+                    <p>@item.productName</p>
             </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.price)
+                    <p>@item.price</p>
                 </td>
             <td>
-                @Html.DisplayFor(modelItem => item.creationDate)
+                    <p>@item.creationDate.ToShortDateString()</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.createdBy)
+                    <p>@item.createdBy</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.startDate)
+                    <p>@item.startDate.ToShortDateString()</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.duration)
+                    <p>@item.duration</p>
             </td>
                 @{
                     if(User.IsInRole("Admin"))
