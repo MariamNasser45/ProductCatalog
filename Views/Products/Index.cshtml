@@ -30,25 +30,25 @@
 
 <table class="table table-striped table-dark">
     <thead>
+        @*in oreder to use asp-for with IEnumerable then need to using the extension-methods "First()" of IEnumerable<T>*@
         <tr>
             <th>
-                @*<label asp-for="@Model.productName">model => model.price</label>*@
-                @Html.DisplayNameFor(model => model.productName)
+                <label asp-for="First().productName"></label>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.price)
+                <label asp-for="First().price"></label>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.creationDate)
+                <label asp-for="First().creationDate"></label>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.createdBy)
+                <label asp-for="First().createdBy"></label>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.startDate)
+                <label asp-for="First().startDate"></label>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.duration)
+                <label asp-for="First().duration"></label>
             </th>
             @{
                 if (User.IsInRole("Admin"))
