@@ -27,6 +27,49 @@ namespace ProductCatalog.Controllers
             CategoryRepo = categoryRepo;
             _context = context;
         }
+        // GET: Products fot Admin As user
+        public IActionResult AdminAsClient()
+        {
+            ViewBag.CategoryID = CategoryRepo.GetAll();
+
+            if (Product.GetAll().Count != 0)
+            {
+                try
+                {
+                     return View(Product.GetAllAvail());
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest("Some Error Occured Please try Again Latter");
+                }
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AdminAsClient(int CategoryId)
+        {
+            ViewBag.CategoryID = CategoryRepo.GetAll();
+
+            if (CategoryRepo.CheckCategoryExistance(CategoryId))
+            {
+                if (Product.CheckProductExistance(CategoryId))
+                {
+                        return View(Product.GetAllAvail().Where(c => c.CategoryID == CategoryId));
+                }
+                return BadRequest("Oops! There are no Products in selected category .... \nPlease try again leter or select other ");
+            }
+            else
+            {
+
+                    return View(Product.GetAllAvail());
+            }
+            return View();
+        }
+
 
         // GET: Products
         public IActionResult Index()
@@ -211,6 +254,8 @@ namespace ProductCatalog.Controllers
             
             return View("Index");
         }
+
+
 
     }
 }

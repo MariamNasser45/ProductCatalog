@@ -1,0 +1,77 @@
+﻿@model IEnumerable<ProductCatalog.Models.Product>
+@using ProductCatalog.Models;
+@{
+    ViewData["Title"] = "All Products";
+}
+
+<form method="post" asp-action="AdminAsClient" class="d-flex justify-content-center">
+
+    @if (ViewBag.CategoryID != null)
+    {
+        <select class="form-select-color:black w-50 mt-3 mb-3" name="CategoryID">
+
+            <option value="0">All</option>
+            @foreach (var item in ViewBag.CategoryID)
+            {
+                <option value="@item.CategoryID">
+                    @item.categoryName
+                </option>
+            }
+        </select>
+    }
+    <input type="submit" class="btn btn-outline-dark mb-3 mt-3" style="margin-left:4px" value="Go" />
+
+</form>
+
+<table class="table table-striped table-dark">
+    <thead>
+        @*in oreder to use asp-for with IEnumerable then need to using the extension-methods "First()" of IEnumerable<T>*@
+        <tr>
+            <th>
+                <label asp-for="First().productName"></label>
+            </th>
+            <th>
+                <label asp-for="First().price"></label>
+            </th>
+            <th>
+                <label asp-for="First().creationDate"></label>
+            </th>
+            <th>
+                <label asp-for="First().createdBy"></label>
+            </th>
+            <th>
+                <label asp-for="First().startDate"></label>
+            </th>
+            <th>
+                <label asp-for="First().duration"></label>
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <p>@item.productName</p>
+                </td>
+                <td>
+                    <p>@item.price</p>
+                </td>
+                <td>
+                    <p>@item.creationDate.ToShortDateString()</p>
+                </td>
+                <td>
+                    <p>@item.createdBy</p>
+                </td>
+                <td>
+                    <p>@item.startDate.ToShortDateString()</p>
+                </td>
+                <td>
+                    <p>@item.duration</p>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
