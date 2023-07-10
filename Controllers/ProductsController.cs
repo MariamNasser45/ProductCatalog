@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Data.SqlClient;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 using ProductCatalog.Data;
@@ -15,6 +16,8 @@ using ProductCatalog.Repo;
 
 namespace ProductCatalog.Controllers
 {
+    //[System.Web.Mvc.HandleError(ExceptionType = typeof(NullReferenceException), View = "NullException")]
+    //[System.Web.Mvc.HandleError(ExceptionType = typeof(AuthorizationFailure), View = "AuthorizeException")]
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -38,7 +41,7 @@ namespace ProductCatalog.Controllers
                 {
                      return View(Product.GetAllAvail());
                 }
-                catch (Exception ex)
+                catch 
                 {
                     return BadRequest("Some Error Occured Please try Again Latter");
                 }
@@ -71,7 +74,7 @@ namespace ProductCatalog.Controllers
         }
 
 
-        // GET: Products
+        // GET: Product
         public IActionResult Index()
         {
             ViewBag.CategoryID = CategoryRepo.GetAll();
@@ -132,8 +135,8 @@ namespace ProductCatalog.Controllers
                 {
                     return View(Product.GetAllAvail());
                 }
+
             }
-            return View();
         }
 
         // GET: Products/Details/5
@@ -170,8 +173,8 @@ namespace ProductCatalog.Controllers
         {
             //var UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-             product.createdBy = HttpContext.User.Identity.Name; // get current user name
-             product.creationDate = DateTime.Now;
+            product.createdBy = HttpContext.User.Identity.Name; // get current user name
+            product.creationDate = DateTime.Now;
             if(product != null)
             {
                 try
@@ -219,7 +222,6 @@ namespace ProductCatalog.Controllers
                         return NotFound($"This product Invalid to Edit, Error Details {ex.Message}");
                 }
 
-            return BadRequest();
         }
         [Authorize(Roles = "Admin")]
         // GET: Products/Delete/5

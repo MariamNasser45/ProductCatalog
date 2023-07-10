@@ -64,7 +64,6 @@ namespace ProductCatalog
                 pattern: "{controller=Products}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-
             ////Craete Admin
             using (var scope = app.Services.CreateScope())
             {
