@@ -16,7 +16,7 @@ using ProductCatalog.Repo;
 
 namespace ProductCatalog.Controllers
 {
-    //[System.Web.Mvc.HandleError(ExceptionType = typeof(NullReferenceException), View = "NullException")]
+    [System.Web.Mvc.HandleError(View = "NullException")]
     //[System.Web.Mvc.HandleError(ExceptionType = typeof(AuthorizationFailure), View = "AuthorizeException")]
     public class ProductsController : Controller
     {
