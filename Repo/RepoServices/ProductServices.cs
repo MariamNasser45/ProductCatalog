@@ -33,7 +33,7 @@ namespace ProductCatalog.Repo.RepoServices
             //dont't need to convert 
             //return Context.Products.Where(c => Convert.ToInt32(DateTime.Now.Day- c.startDate.Day) < c.duration).ToList(); 
 
-            return Context.Products.Where(c => (DateTime.Now.Day - c.startDate.Day) < c.duration).ToList();
+            return Context.Products.Where(c => (DateTime.Now.Day - c.startDate.Day) < (c.startDate.AddDays(c.duration).Day)).ToList();
         }
 
 
