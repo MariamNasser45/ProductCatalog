@@ -3,7 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using ProductCatalog.Data;
 using ProductCatalog.Models;
+using System.Diagnostics.Metrics;
+using System.Drawing;
+using System;
 using System.Security.Claims;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ProductCatalog.Repo.RepoServices
 {
@@ -23,8 +27,8 @@ namespace ProductCatalog.Repo.RepoServices
             if (deleteProduct != null)
             {
                 Context.Remove(deleteProduct);
-
                 Context.SaveChanges();
+              
             }
         }
 
@@ -33,7 +37,11 @@ namespace ProductCatalog.Repo.RepoServices
             //dont't need to convert 
             //return Context.Products.Where(c => Convert.ToInt32(DateTime.Now.Day- c.startDate.Day) < c.duration).ToList(); 
 
-            return Context.Products.Where(c => (DateTime.Now.Day - c.startDate.Day) < (c.startDate.AddDays(c.duration).Day)).ToList();
+            return Context.Products.Where(c => DateTime.Now >= c.startDate
+                                                && ((DateTime.Now.Day - c.startDate.Day) <= (c.duration))
+                                                &&(DateTime.Now.Month - c.startDate.Month) <= (c.startDate.AddDays(c.duration).Month)
+                                                && (DateTime.Now.Year - c.startDate.Year) <= (c.startDate.AddDays(c.duration).Year))
+                                                .ToList();
         }
 
 
